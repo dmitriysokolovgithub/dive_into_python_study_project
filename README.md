@@ -63,12 +63,12 @@ The server should handle put and get commands, parse them, and respond according
 #### Example Usage
 
 $ telnet 127.0.0.1 8888
-> get test_key
-< ok
->
-> got test_key
-< error
-< wrong command
+get test_key
+ok
+
+got test_key
+error
+wrong command
 
 
 ## Environment creation and run
@@ -80,10 +80,12 @@ For deactivate: `env\Scripts\deactivate` or close terminal
 
 ## Requirements
 Python version: v.3.6
+
 `pip install -r requirements.txt`
 
 ## Test run
 Run in project root directory
 
 Run server from the first terminal: `python server\server.py`
+
 Run client comands script from the second terminal: `python main.py`
