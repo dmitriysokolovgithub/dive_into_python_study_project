@@ -53,7 +53,9 @@ Implement a `Client` class encapsulating the connection to the server, client so
 from solution import Client
 
 client = Client("127.0.0.1", 8888, timeout=15)
+
 client.put("palm.cpu", 0.5, timestamp=1150864247)
+
 data = client.get("palm.cpu")
 
 ## Server Implementation
@@ -63,11 +65,15 @@ The server should handle put and get commands, parse them, and respond according
 #### Example Usage
 
 $ telnet 127.0.0.1 8888
+
 get test_key
+
 ok
 
 got test_key
+
 error
+
 wrong command
 
 
