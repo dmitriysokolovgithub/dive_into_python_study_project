@@ -31,7 +31,6 @@ class Client:
             self.socket.sendall(put_command_bytes)
             response_bytes = self.socket.recv(4096)
             response = response_bytes.decode('utf-8')
-            print(f'response = {response}')
             if "error" in response:
                 raise ClientError("put: incorrect response from server")
         except ClientError:
@@ -46,7 +45,6 @@ class Client:
             self.socket.sendall(get_command_bytes)
             response_bytes = self.socket.recv(4096)
             response = response_bytes.decode('utf-8')
-            print(f'response = {response}')
             result = {}
             search_good_response = re.search(r'^(ok\n(\S+\s-?[\d\.]+\s\d+\n)*\n)$', response)
             if not bool(search_good_response):

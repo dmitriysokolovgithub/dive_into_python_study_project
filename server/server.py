@@ -48,10 +48,8 @@ class Storage:
                     return
             # no matches
             self._params[server_name].append(adding_value)
-            print(f"add existing key = '{server_name}'")
         else:
             self._params[server_name] = [adding_value]
-            print(f"add new key = '{server_name}'")
 
 
 class ClientServerProtocol(asyncio.Protocol):
@@ -69,26 +67,20 @@ class ClientServerProtocol(asyncio.Protocol):
         session = str(randint(0, 32000))
         response_command = 'error\nwrong command\n\n'
         if decoded_data and len(decoded_data) > 3:
-            print(f"{session}: decoded_data = {decoded_data}")
             input_command = decoded_data[:3]
             if input_command == "put":
-                print(f"{session}: PUT")
                 check_input = re.search(r'^(put\s(\S+)+\s(-?[0-9]+[.]?[0-9]*)\s(\d+)\n)$', decoded_data)
                 if bool(check_input) and len(check_input.groups()) == 4:
                     response_command = 'ok\n\n'
                     all_input, in_server_name, in_metric_value, in_server_timestamp = check_input.groups()
                     ClientServerProtocol.machines_params.update(in_server_name, int(in_server_timestamp),
                                                        float(in_metric_value))
-                    print(f"{session}: machines_params = '{str(ClientServerProtocol.machines_params)}'")
             elif input_command == "get":
-                print(f"{session}: GET")
                 check_input = re.search(r'^(get\s(\S+)\n)$', decoded_data)
                 if bool(check_input) and len(check_input.groups()) == 2:
                     rough_response_command = 'ok\n'
                     in_server_name = check_input.groups()[1].replace("\n", "")
-                    print(f"{session}: input_server_name = '{in_server_name}'")
                     if in_server_name == '*':
-                        print(f"{session}: IF")
                         for out_server_name in ClientServerProtocol.machines_params.get("*"):
                             for out_pair_value in ClientServerProtocol.machines_params.get(out_server_name):
                                 out_server_timestamp, out_metric_value = out_pair_value
@@ -97,7 +89,6 @@ class ClientServerProtocol(asyncio.Protocol):
                         rough_response_command += '\n'
                         response_command = rough_response_command
                     elif in_server_name in ClientServerProtocol.machines_params.get("*"):
-                        print(f"{session}: ELIF")
                         for out_pair_value in ClientServerProtocol.machines_params.get(in_server_name):
                             out_server_timestamp, out_metric_value = out_pair_value
                             rough_response_command += \
@@ -105,15 +96,11 @@ class ClientServerProtocol(asyncio.Protocol):
                         rough_response_command += '\n'
                         response_command = rough_response_command
                     else:
-                        print(f"{session}: ELSE")
-                        print(f"{session}: machines_params keys = "
-                              f"{str(', '.join(ClientServerProtocol.machines_params.get('*').keys()))}")
                         response_command = 'ok\n\n'
                 else:
-                    print(f"{session}: ELSE!!!")
+                    pass
         else:
-            print(f"{session}: NOT GET AND NOT PUT!!!")
-        print(f"{session}: server command = '{response_command}'")
+            pass
         return response_command
 
     def connection_made(self, transport):
